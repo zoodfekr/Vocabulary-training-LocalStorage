@@ -58,7 +58,6 @@ const Word_editor = () => {
 
 
 	if (word) {
-		console.log("wordstate:", word[0]);
 		return (
 			<HelmetProvider>
 				<Helmet>

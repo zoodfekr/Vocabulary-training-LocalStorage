@@ -17,7 +17,6 @@ const Navbar = () => {
 
 	const reader=()=>{
 		const data = JSON.parse(window.localStorage.getItem('words'))
-		console.log("data>>>2", data)
 	  }
 
 	return (

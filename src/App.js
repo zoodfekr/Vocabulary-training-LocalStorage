@@ -27,7 +27,6 @@ const App = () => {
 
   //  ترجمه کلمه
   useEffect(() => {
-    console.log("word", word)
     const fetchData_google = async () => {
       if (word.english && word.persian) {
         setmeaning({ english: word.english, persian: word.persian })
@@ -43,7 +42,6 @@ const App = () => {
             window.localStorage.setItem('id', JSON.stringify(newid));
             setmeaning({ english: word.english, persian: per[0][0][0], id: newid })
             setinvalue(null);
-            console.log(status)
           } catch (err) {
             setinvalue(null);
             console.log(' مشکل دریافت دیتا انگلیسی');
@@ -71,11 +69,9 @@ const App = () => {
   }, [word]);
 
 
-  console.log(JSON.parse(window.localStorage.getItem('words')))
-
   // ثبت و خواندن اطلاعات از  سرور داخلی
   useEffect(() => {
-    console.log("meaning", meaning);
+
     setmeaning(null);
     const creator = () => {
       if (meaning != null && meaning.english != meaning.persian) {
@@ -83,48 +79,32 @@ const App = () => {
           createword(meaning);
           toast.success("کلمه ساخته شد");
           console.log("کلمه ثبت شد");
-          setinvalue(null);
-
+          setinvalue(null)
         } catch (err) {
           console.log("مشکل ثبت در سرور داخلی");
         }
       }
       if (meaning == null) {
-        try {
-          let words = dbwords();
+        const words = JSON.parse(window.localStorage.getItem('words'));
           setdatawords(words);
           setinvalue(null)
-        }
-        catch (err) {
-          console.log("1مشکل خواندن دیتا از سرور داخلی");
-        }
       }
     };
     creator()
   }, [meaning]);
 
 
-
-
   //حذف کننده کلمه
-  const clear = async (id) => {
+  const clear = (id) => {
     try {
-      const { status } = await remover(id);
-      if (status == 200) {
-        toast.success("کلمه حذف شد")
-        try {
-          let { data: words } = await dbwords();
-          setdatawords(words);
-        }
-        catch (err) {
-          console.log("مشکل خواندن دیتا از سرور داخلی");
-        }
-      }
+      remover(id);
+      toast.success("کلمه حذف شد")
+      let words = dbwords();
+      setdatawords(words);
     } catch {
       console.log("مشکل در حذف کلمه");
     }
   }
-
 
   // چک کننده کلمات تکراری
   const checker = (value) => {
@@ -136,7 +116,6 @@ const App = () => {
         setinvalue(null);
         alert("کلمه شما از قبل وجود دارد")
       } else {
-        console.log("value:", value)
         setWord(value)
         setinvalue(null);
       }
@@ -146,25 +125,13 @@ const App = () => {
     }
   }
 
-
   //به روزرسانی کلمه
-  const handleupdate = async (id, data) => {
-    try {
-      const { status } = await update(id, data);
-      if (status == 200) {
-        toast.success("کلمه به روز شد  ")
-        navigate('/');
-        try {
-          let { data: words } = await dbwords();
-          setdatawords(words);
-        }
-        catch (err) {
-          console.log("مشکل خواندن دیتا از سرور داخلی");
-        }
-      }
-    } catch {
-      console.log("مشکل در به روز رسانی کلمه");
-    }
+  const handleupdate = (id, data) => {
+    update(id, data);
+    toast.success("کلمه به روز شد  ")
+    navigate('/');
+    const words = JSON.parse(window.localStorage.getItem('words'));
+    setdatawords(words);
   }
 
   // مقدار دهی اولیه برنامه
