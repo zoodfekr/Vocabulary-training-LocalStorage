@@ -27,6 +27,7 @@ const App = () => {
 
   //  ترجمه کلمه
   useEffect(() => {
+    console.log("word", word)
     const fetchData_google = async () => {
       if (word.english && word.persian) {
         setmeaning({ english: word.english, persian: word.persian })
@@ -36,12 +37,13 @@ const App = () => {
         if (word.english && !word.persian) {
           setinvalue("");
           try {
-
             let { data: per, status } = await english_tranclate(word.english)
-            setmeaning({ english: word.english, persian: per[0][0][0] })
+            const id = JSON.parse(window.localStorage.getItem('id'));
+            const newid = parseInt(id) + 1;
+            window.localStorage.setItem('id', JSON.stringify(newid));
+            setmeaning({ english: word.english, persian: per[0][0][0], id: newid })
             setinvalue(null);
             console.log(status)
-
           } catch (err) {
             setinvalue(null);
             console.log(' مشکل دریافت دیتا انگلیسی');
@@ -52,7 +54,10 @@ const App = () => {
           setinvalue("");
           try {
             let { data: eng } = await persian_tranclate(word.persian);
-            setmeaning({ english: eng[0][0][0], persian: word.persian });
+            const id = JSON.parse(window.localStorage.getItem('id'));
+            const newid = parseInt(id) + 1;
+            window.localStorage.setItem('id', JSON.stringify(newid));
+            setmeaning({ english: eng[0][0][0], persian: word.persian, id: newid });
             setinvalue(null);
           } catch (err) {
             setinvalue(null);
@@ -66,29 +71,27 @@ const App = () => {
   }, [word]);
 
 
-
+  console.log(JSON.parse(window.localStorage.getItem('words')))
 
   // ثبت و خواندن اطلاعات از  سرور داخلی
   useEffect(() => {
+    console.log("meaning", meaning);
     setmeaning(null);
     const creator = () => {
       if (meaning != null && meaning.english != meaning.persian) {
         try {
-          const { status } = createword(meaning);
-          if (status == 201) {
-            toast.success("کلمه ساخته شد")
-            console.log("کلمه ثبت شد");
-            setinvalue(null);
-          } else {
-            console.log("ساخته نشد")
-          }
+          createword(meaning);
+          toast.success("کلمه ساخته شد");
+          console.log("کلمه ثبت شد");
+          setinvalue(null);
+
         } catch (err) {
           console.log("مشکل ثبت در سرور داخلی");
         }
       }
       if (meaning == null) {
         try {
-          let  words  = dbwords();
+          let words = dbwords();
           setdatawords(words);
           setinvalue(null)
         }
@@ -99,6 +102,7 @@ const App = () => {
     };
     creator()
   }, [meaning]);
+
 
 
 
@@ -124,14 +128,19 @@ const App = () => {
 
   // چک کننده کلمات تکراری
   const checker = (value) => {
-    console.log("value:", value)
-    let ebank = datawords.map(x => x.english);
-    let pbank = datawords.map(x => x.persian);
-    setinvalue("");
-    if (ebank.includes(value.english) || pbank.includes(value.persian)) {
-      setinvalue(null);
-      alert("کلمه شما از قبل وجود دارد")
-    } else {
+    try {
+      let ebank = datawords.map(x => x.english);
+      let pbank = datawords.map(x => x.persian);
+      setinvalue("");
+      if (ebank.includes(value.english) || pbank.includes(value.persian)) {
+        setinvalue(null);
+        alert("کلمه شما از قبل وجود دارد")
+      } else {
+        console.log("value:", value)
+        setWord(value)
+        setinvalue(null);
+      }
+    } catch {
       setWord(value)
       setinvalue(null);
     }
@@ -157,7 +166,19 @@ const App = () => {
       console.log("مشکل در به روز رسانی کلمه");
     }
   }
-  // throw new Error("خودمان خطا ایجاد کردیم");
+
+  // مقدار دهی اولیه برنامه
+  useEffect(() => {
+    const words = JSON.parse(window.localStorage.getItem('words'));
+    const id = JSON.parse(window.localStorage.getItem('id'));
+
+    if (words == null) {
+      window.localStorage.setItem('words', JSON.stringify([]));
+    }
+    else if (id == null) {
+      window.localStorage.setItem('id', JSON.stringify(1));
+    }
+  }, []);
 
 
   return (

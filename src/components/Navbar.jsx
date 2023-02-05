@@ -31,7 +31,6 @@ const Navbar = () => {
 			</nav >
 
 			<div className='d-flex'>
-				<button onClick={reader}>خواندن</button>
 
 				<Outlet></Outlet>
 

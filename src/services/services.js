@@ -1,5 +1,6 @@
 
 import axios from "axios";
+const data = JSON.parse(window.localStorage.getItem('words'))
 
 
 // tranclate - googleAPI
@@ -33,22 +34,22 @@ export const persian_tranclate = (word) => {
 	// return new Promise((resolve, reject) => reject([]));
 };
 
-//local server
+
 // return all words
 export const dbwords = () => {
-	// return axios.get(`http://localhost:9000/words`);
-	return JSON.parse(window.localStorage.getItem('words'))
+	return data
 }
 
 // return word
 export const word_info = (id) => {
-	return axios.get(`http://localhost:9000/words/${id}`)
+	return data.filter(x => x.id == id)
 }
 
 // post new word
 export const createword = (data) => {
-	const url = `http://localhost:9000/words`;
-	return axios.post(url, data);
+	const words = JSON.parse(window.localStorage.getItem('words'));
+	words.push(data)
+	window.localStorage.setItem('words', JSON.stringify(words));
 };
 
 // delete word

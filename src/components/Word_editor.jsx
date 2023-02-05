@@ -17,11 +17,11 @@ const Word_editor = () => {
 	const [word, setword] = useState()
 
 	useEffect(() => {
-		const recever = async () => {
+		const recever = () => {
 			try {
-				let { data: wdata } = await word_info(parseInt(params.wid)) //10
-				setword(wdata);
-				console.log(wdata);
+				let words = word_info(parseInt(params.wid)) //10
+				setword(words[0]);
+				console.log(words);
 			} catch {
 				console.log("مشکلی پیش آمده");
 			}
@@ -58,7 +58,7 @@ const Word_editor = () => {
 
 
 	if (word) {
-
+		console.log("wordstate:", word[0]);
 		return (
 			<HelmetProvider>
 				<Helmet>

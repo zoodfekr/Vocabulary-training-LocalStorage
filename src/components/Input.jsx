@@ -16,7 +16,7 @@ const Input = () => {
 
 	const { checker, invalue } = useContext(AppContext);
 
-	const initialvalues = { english: "", persian: "" };
+
 
 	return (
 		<>
@@ -30,7 +30,7 @@ const Input = () => {
 			<div className='container-fluid d-flex flex-row flex-wrap d-flex justify-content-center p-2 ' >
 				<div className=' border container-fluid py-3 input-bg' >
 					<Formik
-						initialValues={initialvalues}
+						initialValues={{ english: "", persian: "" }}
 						validationSchema={tranclateSchema}
 						onSubmit={async (values, { resetForm }) => {
 							await checker(values)
