@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.5bbb4114.css",
+    "main.js": "/static/js/main.244dc258.js",
+    "static/media/Spinner.gif": "/static/media/Spinner.5b35cef0ce49e2af8525.gif",
+    "static/media/B-NAZANIN.ttf": "/static/media/B-NAZANIN.d7478a9ecad2d8496d98.ttf",
+    "static/media/B-Mitra.ttf": "/static/media/B-Mitra.9406f2558bc66343dd9e.ttf",
+    "static/media/B-Mitra-Bold.ttf": "/static/media/B-Mitra-Bold.5136982a0a4e8fac7f2d.ttf",
+    "index.html": "/index.html",
+    "main.5bbb4114.css.map": "/static/css/main.5bbb4114.css.map",
+    "main.244dc258.js.map": "/static/js/main.244dc258.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5bbb4114.css",
+    "static/js/main.244dc258.js"
+  ]
+}
