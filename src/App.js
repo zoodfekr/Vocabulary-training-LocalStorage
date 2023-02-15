@@ -1,22 +1,23 @@
 import React, { Suspense } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { createPortal } from "react-dom"
 import Input from "./components/Input";
 import Words from './components/Words';
 import Navbar from './components/Navbar';
-// import { Portal } from 'react-portal';
 import Appcontext from './context/Context';
 import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
 import './style/style.scss';
-import { Form, Field, Formik, ErrorMessage } from 'formik';
-import { tranclateSchema } from "./validation/validation";
 import { createword, dbwords, english_tranclate, persian_tranclate, remover, tranclate, update } from './services/services';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Word_editor from './components/Word_editor';
-import Spiner from './components/Preloader';
 import Error from './components/Error';
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import createCache from "@emotion/cache";
+import { prefixer } from "stylis";
+import rtlPlugin from "stylis-plugin-rtl";
+import { CssBaseline } from '@mui/material';
+import { CacheProvider } from '@emotion/react';
+import { confirmAlert } from 'react-confirm-alert';
 
 const App = () => {
   const [word, setWord] = useState(null); //کلمه دریافتی از کاربر
@@ -95,7 +96,36 @@ const App = () => {
 
 
   //حذف کننده کلمه
-  const clear = (id) => {
+  const clear_s1 = id => {
+
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          < div className='custom-ui' >
+            <div className='border border-danger p-5 container custom-ui-message' style={{
+              backgroundColor: "#E5E8E8",
+              borderRadius: "25px"
+            }} dir='rtl'>
+              <h3 className='text-danger'>{`در حال حذف کلمه هستید!!!`}</h3>
+              <p className='text-dark'>آیا اطمینان دارید؟</p>
+
+              <button className='btn btn-primary mx-1' onClick={onClose}>خیر</button>
+              <button
+                className='btn btn-danger mx-1'
+                onClick={() => {
+                  clear_s2(id); onClose();
+                }}
+              >
+                بله
+              </button>
+            </div>
+          </div >
+        );
+      }
+    });
+
+  };
+  const clear_s2 = (id) => {
     try {
       remover(id);
       toast.success("کلمه حذف شد")
@@ -147,20 +177,43 @@ const App = () => {
     }
   }, []);
 
+  // theme
+  const [mode, setmode] = useState(true);
+  const theme = createTheme({
+    direction: "rtl",
+    typography: {
+      fontSize: 12,
+      fontFamily: [
+        'vazir',
+        'IranNastaliq',
+        'B_Mitra_Bold'
+      ].join(','),
+    },
+    palette: {
+      mode: mode ? "light" : "dark",
+    }
+  })
+  const cachertl = createCache({
+    key: "muirtl",
+    stylisPlugins: [prefixer, rtlPlugin]
+  })
+
 
   return (
-    <Appcontext.Provider value={{ datawords, clear, checker, invalue, handleupdate }}>
-
-      <Routes>
-        <Route path='/' element={<Navbar />}>
-          <Route path='/' element={<Input />}></Route>
-          <Route path='/' element={<Words />}></Route>
-          <Route path='/editor/:wid' element={<Word_editor />} />
-        </Route>
-
-        <Route path="*" element={<Error />} />
-      </Routes>
-
+    <Appcontext.Provider value={{ datawords, clear_s1, checker, invalue, handleupdate, setmode }}>
+      <CacheProvider value={cachertl}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Routes>
+            <Route path='/' element={<Navbar />}>
+              <Route path='/' element={<Input />}></Route>
+              <Route path='/' element={<Words />}></Route>
+              <Route path='/editor/:wid' element={<Word_editor />} />
+            </Route>
+            <Route path="*" element={<Error />} />
+          </Routes>
+        </ThemeProvider>
+      </CacheProvider>
     </Appcontext.Provider >
   )
 };
