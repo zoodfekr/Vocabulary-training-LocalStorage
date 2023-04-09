@@ -16,11 +16,9 @@ import { Outlet } from 'react-router-dom';
 
 const Input = () => {
 
-	const { checker, invalue } = useContext(AppContext);
+	const { checker, invalue, datawords } = useContext(AppContext);
 
-	const initialvalues = { english: "", persian: "" };
-
-
+	const initialvalues = { english: "", persian: "", background: '' };
 
 
 	return (

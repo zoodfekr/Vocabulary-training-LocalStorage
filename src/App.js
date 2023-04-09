@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Input from "./components/Input";
 import Words from './components/Words';
 import Navbar from './components/Navbar';
@@ -18,19 +18,34 @@ import rtlPlugin from "stylis-plugin-rtl";
 import { CssBaseline } from '@mui/material';
 import { CacheProvider } from '@emotion/react';
 import { confirmAlert } from 'react-confirm-alert';
-
+import Exam from './components/Exam';
+import Exam_results from './components/Exam_results';
+import Exam_form from './components/Exam_form';
 const App = () => {
+  let location = useLocation();
   const [word, setWord] = useState(null); //کلمه دریافتی از کاربر
   const [meaning, setmeaning] = useState(null); // کلمه معنی شده از گوگل
   const [datawords, setdatawords] = useState(null); // کلمه های خوانده شده از سرور داخلی
   const [invalue, setinvalue] = useState(null); // خالی کننده مقدار ورودی ها
   const navigate = useNavigate();
+  const [wordcolor, setwordcolor] = useState(null);//تعین رنگ کلمه
+  const [persianshow, setpersianshow] = useState(true);//نمایش کلمات فارسی
+  const [englishshow, setenglishshow] = useState(true);// نمایش کلمات انگلیسی
+  let [SearchParams, setSearchParams] = useSearchParams();
+  const [mistake, setmistake] = useState(); // کلمات اشتباه کاربر
+  const [Score, setScore] = useState(); //امنتیاز کاربر
 
   //  ترجمه کلمه
   useEffect(() => {
+    const randomcolor = `rgb( ${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 200)},${Math.floor(Math.random() * 255)},0.45)`;
     const fetchData_google = async () => {
       if (word.english && word.persian) {
-        setmeaning({ english: word.english, persian: word.persian })
+
+        const lid = JSON.parse(window.localStorage.getItem('id'));
+        const id = parseInt(lid) + 1;
+        window.localStorage.setItem('id', JSON.stringify(id));
+
+        setmeaning({ english: word.english, persian: word.persian, background: randomcolor, id })
         setinvalue("");
       } else {
 
@@ -38,14 +53,16 @@ const App = () => {
           setinvalue("");
           try {
             let { data: per, status } = await english_tranclate(word.english)
-            const id = JSON.parse(window.localStorage.getItem('id'));
-            const newid = parseInt(id) + 1;
-            window.localStorage.setItem('id', JSON.stringify(newid));
-            setmeaning({ english: word.english, persian: per[0][0][0], id: newid })
+
+            const lid = JSON.parse(window.localStorage.getItem('id'));
+            const id = parseInt(lid) + 1;
+            window.localStorage.setItem('id', JSON.stringify(id));
+
+            setmeaning({ english: word.english, persian: per[0][0][0], background: randomcolor, id })
             setinvalue(null);
           } catch (err) {
             setinvalue(null);
-            console.log(' مشکل دریافت دیتا انگلیسی');
+            // console.log(' مشکل دریافت دیتا انگلیسی');
             alert("عدم دسترس به سرور")
           }
         }
@@ -53,15 +70,17 @@ const App = () => {
           setinvalue("");
           try {
             let { data: eng } = await persian_tranclate(word.persian);
-            const id = JSON.parse(window.localStorage.getItem('id'));
-            const newid = parseInt(id) + 1;
-            window.localStorage.setItem('id', JSON.stringify(newid));
-            setmeaning({ english: eng[0][0][0], persian: word.persian, id: newid });
+
+            const lid = JSON.parse(window.localStorage.getItem('id'));
+            const id = parseInt(lid) + 1;
+            window.localStorage.setItem('id', JSON.stringify(id));
+
+            setmeaning({ english: eng[0][0][0], persian: word.persian, background: randomcolor, id });
             setinvalue(null);
           } catch (err) {
             setinvalue(null);
             alert("عدم دسترس به سرور")
-            console.log('مشکل دریافت دیتا فارسی');
+            // console.log('مشکل دریافت دیتا فارسی');
           }
         }
       }
@@ -79,16 +98,16 @@ const App = () => {
         try {
           createword(meaning);
           toast.success("کلمه ساخته شد");
-          console.log("کلمه ثبت شد");
+          // console.log("کلمه ثبت شد");
           setinvalue(null)
         } catch (err) {
-          console.log("مشکل ثبت در سرور داخلی");
+          // console.log("مشکل ثبت در سرور داخلی");
         }
       }
       if (meaning == null) {
         const words = JSON.parse(window.localStorage.getItem('words'));
-          setdatawords(words);
-          setinvalue(null)
+        setdatawords(words);
+        setinvalue(null)
       }
     };
     creator()
@@ -132,7 +151,7 @@ const App = () => {
       let words = dbwords();
       setdatawords(words);
     } catch {
-      console.log("مشکل در حذف کلمه");
+      // console.log("مشکل در حذف کلمه");
     }
   }
 
@@ -166,16 +185,27 @@ const App = () => {
 
   // مقدار دهی اولیه برنامه
   useEffect(() => {
+    setSearchParams({});// خالی کننده مقدار سرج در نوبار
     const words = JSON.parse(window.localStorage.getItem('words'));
     const id = JSON.parse(window.localStorage.getItem('id'));
-
     if (words == null) {
       window.localStorage.setItem('words', JSON.stringify([]));
     }
     else if (id == null) {
       window.localStorage.setItem('id', JSON.stringify(1));
     }
+
+    const costomcolor = JSON.parse(window.localStorage.getItem('word_bgcolor'));
+    if (costomcolor == null) {
+      // console.log("set initial color")
+      window.localStorage.setItem('word_bgcolor', JSON.stringify("colorly"));
+    }
   }, []);
+
+  const [open, setOpen] = React.useState(false);
+
+
+
 
   // theme
   const [mode, setmode] = useState(true);
@@ -191,6 +221,16 @@ const App = () => {
     },
     palette: {
       mode: mode ? "light" : "dark",
+      C_blue: {
+        main: mode ? "#93BFCF" : "#6096B4",
+      },
+      C_gray: {
+        main: mode ? "#9a9a9a" : "#6f6f6f",
+      },
+      C_purple: {
+        main: mode ? "#A084DC" : "#645CBB",
+      },
+
     }
   })
   const cachertl = createCache({
@@ -198,9 +238,20 @@ const App = () => {
     stylisPlugins: [prefixer, rtlPlugin]
   })
 
+  const costomcolor = JSON.parse(window.localStorage.getItem('word_bgcolor'));
+
+
+
 
   return (
-    <Appcontext.Provider value={{ datawords, clear_s1, checker, invalue, handleupdate, setmode }}>
+    <Appcontext.Provider value={{
+      datawords, clear_s1, checker,
+      invalue, handleupdate, setmode,
+      costomcolor, setwordcolor, theme,
+      persianshow, englishshow, setpersianshow,
+      setenglishshow, setSearchParams, SearchParams,
+      setOpen, open, setmistake, mistake, setScore, Score
+    }}>
       <CacheProvider value={cachertl}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
@@ -209,6 +260,10 @@ const App = () => {
               <Route path='/' element={<Input />}></Route>
               <Route path='/' element={<Words />}></Route>
               <Route path='/editor/:wid' element={<Word_editor />} />
+              <Route path='/Exam' element={<Exam />} >
+                <Route path='/Exam' element={<Exam_form />} />
+                <Route path='/Exam/results' element={<Exam_results />} />
+              </Route>
             </Route>
             <Route path="*" element={<Error />} />
           </Routes>

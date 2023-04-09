@@ -23,11 +23,15 @@ import Slide from '@mui/material/Slide';
 import Fab from '@mui/material/Fab';
 // import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { FaArrowCircleUp } from "react-icons/fa";
-
+import PersistentDrawerRight from './mui/Sidebar';
+import zIndex from '@mui/material/styles/zIndex';
+import { boolean } from 'yup/lib/locale';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { Height } from '@mui/icons-material';
 
 const Navbar = (props) => {
 
-	const { setmode } = useContext(AppContext);
+	const { setOpen, open } = useContext(AppContext);
 
 	function HideOnScroll(props) {
 		const { children } = props;
@@ -76,34 +80,30 @@ const Navbar = (props) => {
 		);
 	}
 
+	const handleDrawerClose = () => {
+		setOpen(false);
+	};
+
+
 	return (
 		<>
-			{/* <HideOnScroll > */}
+
 
 			<span id='back-to-top-anchor'></span>
-			<AppBar className='w-100'>
-				<Toolbar className='w-100'>
-					<Typography variant="h6" component="div" className='' >
-						<RiFileWord2Fill style={{ color: "yellow", fontSize: '50px' }} className='mx-2'></RiFileWord2Fill>
-						تمرین لغت
-					</Typography>
-					<Typography component="div" className='mx-5'>
-						<AntSwitch onClick={() => setmode((prevLoading) => !prevLoading)}></AntSwitch>
-					</Typography>
 
+			<PersistentDrawerRight ></PersistentDrawerRight>
 
+			{open ? <Box onClick={handleDrawerClose} className="w-100 bg-dark mt-5" style={{ position: "absolute", opacity: 0.5, z_index: 5000, height:"100vh",position:"fixed"   }}>
+				<p>test</p>
+			</Box> : null}
 
-
-				</Toolbar>
-			</AppBar>
-
-
-
-			<Box sx={{ my: 7 }} >
+			{/* topbutton */}
+			<Box sx={{ my: 7 }} onClick={handleDrawerClose}>
 				<Outlet></Outlet>
 				<ScrollTop {...props} >
-					<Fab size="big" aria-label="scroll back to top" className='bg-danger'>
-						<FaArrowCircleUp style={{ fontSize: "50px" }}></FaArrowCircleUp>
+					<Fab size="small" aria-label="scroll back to top" className=''>
+						{/* <FaArrowCircleUp style={{ fontSize: "50px" }}></FaArrowCircleUp> */}
+						<KeyboardArrowUpIcon style={{ fontSize: "35px" }} />
 					</Fab>
 				</ScrollTop>
 
@@ -122,6 +122,7 @@ const Navbar = (props) => {
 						theme="colored"
 					/>
 				</div>
+
 
 			</Box>
 

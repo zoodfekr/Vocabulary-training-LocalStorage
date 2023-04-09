@@ -3,16 +3,32 @@ import { useContext, useState } from "react";
 import AppContext from '../context/Context';
 import { Link } from "react-router-dom";
 import { HiSpeakerWave } from "react-icons/hi2";
+import Box from '@mui/material/Box';
+const Word = ({ datawords, costomcolor }) => {
+	const { handleupdate, clear_s1, theme, persianshow, englishshow } = useContext(AppContext);
 
-const Word = ({ datawords }) => {
-	const { handleupdate, clear_s1 } = useContext(AppContext);
-	const randomcolor = `rgb( ${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 200)},${Math.floor(Math.random() * 255)},0.45`;
+
 	const [disable, setdisbale] = useState(true);
 	const update = () => setdisbale(!disable);
 
-	const stylefont = {
-		fontSize: "15px",
+	const randomcolor = `rgba(${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 200)},${Math.floor(Math.random() * 255)}, 0.5)`;
+	const [color, setcolor] = useState();
+	const blue = theme.palette.C_blue.main
+	const gray = theme.palette.C_gray.main
+	const purple = theme.palette.C_purple.main
+
+	const style = {
+		backgroundColor: costomcolor == "colorly"
+			? (datawords.background ? datawords.background : randomcolor)
+			: (costomcolor == "gray" ? gray :
+				(costomcolor == "purple" ? purple : blue)
+			)
 	}
+
+	const persian_stylefont = { fontSize: "15px", visibility: persianshow ? "" : "hidden" }
+	const english_stylefont = { fontSize: "15px", visibility: englishshow ? "" : "hidden" }
+
+
 
 	const reader = () => {
 		let utterance = new SpeechSynthesisUtterance(datawords.english);
@@ -23,12 +39,12 @@ const Word = ({ datawords }) => {
 		speechSynthesis.speak(utterance);
 	}
 
-	const form = <div className='  mx-2  d-flex  w-100 justify-content-between p-0 flex-column'>
+	const form = <div className='  mx-1  d-flex  w-100 justify-content-between p-0  ' >
 
-		<div className=" d-flex justify-content-start align-items-center p-0 ">
-			<p className="  " style={stylefont}>{datawords.english}</p>
+		<div className=" d-flex justify-content-start align-items-center p-0 " onClick={reader}>
+			<p className="" style={english_stylefont}>{datawords.english}</p>
 			<p>:</p>
-			<p className="" style={stylefont}>{datawords.persian}</p>
+			<p className="" style={persian_stylefont}>{datawords.persian}</p>
 		</div>
 
 		<div className="d-flex  flex-row justify-content-end ">
@@ -41,11 +57,12 @@ const Word = ({ datawords }) => {
 
 
 	return (
-		<div className="  word d-flex  justify-content-between p-1 m-1 " style={{ backgroundColor: randomcolor }}>
-			<div className="d-flex  pt-0  w-100  " >
+		<Box className="  word d-flex  justify-content-between p-1 m-1 "
+			sx={{ bgcolor: style }}>
+			<div className="d-flex  pt-0  w-100 " >
 				{form}
 			</div>
-		</div >
+		</Box  >
 	)
 };
 
