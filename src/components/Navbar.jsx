@@ -15,7 +15,6 @@ import useScrollTrigger from '@mui/material/useScrollTrigger';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import { Typography } from '@mui/material';
-import { Box } from '@mui/system';
 import { RiFileWord2Fill } from "react-icons/ri";
 import AppContext from '../context/Context';
 import AntSwitch from './mui/AntSwitch'
@@ -28,6 +27,11 @@ import zIndex from '@mui/material/styles/zIndex';
 import { boolean } from 'yup/lib/locale';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Height } from '@mui/icons-material';
+import { Box, Button } from "@mui/material";
+import Fastcontroler from '../components/Fastcontroler'
+
+
+
 
 const Navbar = (props) => {
 
@@ -93,16 +97,18 @@ const Navbar = (props) => {
 
 			<PersistentDrawerRight ></PersistentDrawerRight>
 
-			{open ? <Box onClick={handleDrawerClose} className="w-100 bg-dark mt-5" style={{ position: "absolute", opacity: 0.5, z_index: 5000, height:"100vh",position:"fixed"   }}>
+			{open ? <Box onClick={handleDrawerClose} className="w-100 bg-dark mt-5" style={{ position: "absolute", opacity: 0.5, z_index: 5000, height: "100vh", position: "fixed" }}>
 				<p>test</p>
 			</Box> : null}
+
+			<Fastcontroler></Fastcontroler>
+
 
 			{/* topbutton */}
 			<Box sx={{ my: 7 }} onClick={handleDrawerClose}>
 				<Outlet></Outlet>
 				<ScrollTop {...props} >
 					<Fab size="small" aria-label="scroll back to top" className=''>
-						{/* <FaArrowCircleUp style={{ fontSize: "50px" }}></FaArrowCircleUp> */}
 						<KeyboardArrowUpIcon style={{ fontSize: "35px" }} />
 					</Fab>
 				</ScrollTop>

@@ -205,8 +205,6 @@ const App = () => {
   const [open, setOpen] = React.useState(false);
 
 
-
-
   // theme
   const [mode, setmode] = useState(true);
   const theme = createTheme({
@@ -239,8 +237,6 @@ const App = () => {
   })
 
   const costomcolor = JSON.parse(window.localStorage.getItem('word_bgcolor'));
-
-
 
 
   return (

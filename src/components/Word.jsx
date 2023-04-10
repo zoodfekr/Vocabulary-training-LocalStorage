@@ -67,8 +67,3 @@ const Word = ({ datawords, costomcolor }) => {
 };
 
 export default Word;
-
-{/* <Popup trigger={<a className="btn" onClick={{}}> <HiOutlinePencil></HiOutlinePencil></a>} position="top center">
-{loger()}
-<div>Popup content here !!</div>
-</Popup> */}

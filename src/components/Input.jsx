@@ -21,13 +21,14 @@ const Input = () => {
 	const initialvalues = { english: "", persian: "", background: '' };
 
 
+
 	return (
 		<>
 			<HelmetProvider>
+
 				<Helmet>		  <title> تمرین لغت</title>
 					<link rel="canonical" href="https://www.tacobell.com/" />
 				</Helmet>
-
 
 
 
