@@ -49,10 +49,10 @@ const Input = () => {
 
 								<Form >
 									<div className='d-flex my-2'>
-										<Field name="english" className='form-control ltr m-1 input' placeholder="english" value={invalue}></Field>
+										<Field id='e_in' name="english" className='form-control ltr m-1 input' placeholder="english" value={invalue}></Field>
 										<ErrorMessage name="english"
 											render={(msg) => (<small className="text-danger position-absolute my-4 py-3">{msg}</small>)} />
-										<Field name="persian" className='form-control m-1 input' placeholder="فارسی" value={invalue}></Field>
+										<Field id='p_in' name="persian" className='form-control m-1 input' placeholder="فارسی" value={invalue}></Field>
 
 										<ErrorMessage name="persian"
 											render={(msg) => (<small className="text-danger position-absolute">{msg}</small>)} />

@@ -88,6 +88,7 @@ export default function SearchAppBar() {
                 placeholder="یافتن کلمه"
                 inputProps={{ 'aria-label': 'search' }}
                 sx={{ p: 0, ml: 1, direction: "rtl" }}
+                id='Search'
             />
 
         </Search>
